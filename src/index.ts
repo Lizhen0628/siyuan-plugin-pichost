@@ -90,6 +90,37 @@ export default class PichostPlugin extends Plugin {
         });
         const serverInputElement = document.createElement("input");
         const tokenInputElement = document.createElement("input");
+        // 测试按钮:用输入框中的当前值(未保存也可)验证地址与密钥
+        const testButtonElement = document.createElement("button");
+        testButtonElement.type = "button";
+        testButtonElement.className = "b3-button b3-button--outline fn__flex-center fn__size200";
+        testButtonElement.textContent = this.i18n.testConnection;
+        testButtonElement.addEventListener("click", async () => {
+            if (testButtonElement.hasAttribute("disabled")) {
+                return;
+            }
+            testButtonElement.setAttribute("disabled", "disabled");
+            const originalText = testButtonElement.textContent;
+            testButtonElement.textContent = this.i18n.testing;
+            try {
+                const client = new PichostClient({
+                    serverUrl: (serverInputElement.value.trim() || DEFAULT_CONFIG.serverUrl).replace(/\/+$/, ""),
+                    token: tokenInputElement.value.trim(),
+                });
+                if (!client.ready) {
+                    showMessage(`[${this.name}] ${this.i18n.missingToken}`);
+                    return;
+                }
+                const result = await client.listImages(1, 1);
+                showMessage(`[${this.name}] ${this.i18n.testOk.replace("${total}", String(result.total ?? 0))}`);
+            } catch (e) {
+                const msg = e instanceof Error ? e.message : String(e);
+                showMessage(`[${this.name}] ${this.i18n.testFail.replace("${msg}", msg)}`);
+            } finally {
+                testButtonElement.removeAttribute("disabled");
+                testButtonElement.textContent = originalText;
+            }
+        });
         this.setting = new Setting({
             width: "600px",
             confirmCallback: () => {
@@ -117,6 +148,11 @@ export default class PichostPlugin extends Plugin {
                 tokenInputElement.value = this.config.token;
                 return tokenInputElement;
             },
+        });
+        this.setting.addItem({
+            title: this.i18n.testConnection,
+            description: this.i18n.testConnectionDesc,
+            actionElement: testButtonElement,
         });
         this.setting.addItem({
             title: this.i18n.settingActionTitle,

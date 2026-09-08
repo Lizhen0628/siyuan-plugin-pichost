@@ -32,5 +32,10 @@
   "settingActionDesc": "打开思源设置中的本插件配置界面",
   "openSetting": "设置",
   "saved": "设置已保存",
-  "missingToken": "请先在插件设置中配置 API Token"
+  "missingToken": "请先在插件设置中配置 API Token",
+  "testConnection": "测试连接",
+  "testConnectionDesc": "验证上方填写的服务器地址与 API Token(无需先保存)",
+  "testing": "测试中...",
+  "testOk": "连接成功,图床共有 ${total} 张图片",
+  "testFail": "连接失败:${msg}"
 }

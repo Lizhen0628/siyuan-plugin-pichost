@@ -32,5 +32,10 @@
   "settingActionDesc": "Open the SiYuan settings dialog for this plugin",
   "openSetting": "Settings",
   "saved": "Settings saved",
-  "missingToken": "Please configure the API Token in plugin settings first"
+  "missingToken": "Please configure the API Token in plugin settings first",
+  "testConnection": "Test Connection",
+  "testConnectionDesc": "Verify the server URL and API token above (no need to save first)",
+  "testing": "Testing...",
+  "testOk": "Connection OK — ${total} image(s) on the host",
+  "testFail": "Connection failed: ${msg}"
 }
