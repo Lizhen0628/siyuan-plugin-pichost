@@ -1,0 +1,44 @@
+{
+  "name": "siyuan-plugin-pichost",
+  "author": "lizhen",
+  "url": "https://github.com/Lizhen0628/siyuan-plugin-pichost",
+  "version": "0.1.0",
+  "minAppVersion": "3.8.3",
+  "backends": [
+    "windows",
+    "linux",
+    "darwin",
+    "docker",
+    "all"
+  ],
+  "frontends": [
+    "desktop",
+    "mobile",
+    "browser-desktop",
+    "browser-mobile",
+    "desktop-window",
+    "all"
+  ],
+  "disabledInPublish": false,
+  "displayName": {
+    "default": "PicHost",
+    "zh-CN": "PicHost 图床"
+  },
+  "description": {
+    "default": "Upload document images to a self-hosted PicHost server and manage them (list / search / copy links / delete)",
+    "zh-CN": "将文档图片上传到自部署的 PicHost 图床并统一管理(列表 / 搜索 / 复制链接 / 删除)"
+  },
+  "readme": {
+    "default": "README.md",
+    "zh-CN": "README.zh-CN.md"
+  },
+  "icon": "icon.png",
+  "preview": "preview.png",
+  "funding": {},
+  "keywords": [
+    "pichost",
+    "image hosting",
+    "图床",
+    "图片上传"
+  ]
+}
