@@ -1,4 +1,5 @@
 import {
+    getAllEditor,
     IMenuBaseDetail,
     IOperation,
     Plugin,
@@ -11,7 +12,7 @@ import {
 import type {Custom, IProtyle, subMenu} from "siyuan";
 import "./index.scss";
 import {PichostClient, PichostConfig} from "./api";
-import {collectLocalImages, getLocalAssetPath, uploadAndReplaceImages} from "./uploader";
+import {collectLocalImages, deleteAssetFile, getLocalAssetPath, uploadAndReplaceImages} from "./uploader";
 import {PichostPanel} from "./panel";
 
 const STORAGE_NAME = "pichost-config";
@@ -32,16 +33,25 @@ const panelRegistry = new WeakMap<object, PichostPanel>();
 const DEFAULT_CONFIG: PichostConfig = {
     serverUrl: "https://pichost.tools-online.site",
     token: "",
+    autoUpload: false,
 };
 
 export default class PichostPlugin extends Plugin {
     private isMobile: boolean;
+
+    // ── 自动上传状态 ──
+    private autoObserver: MutationObserver | null = null;
+    private autoTimer: number | null = null;
+    private readonly autoQueue = new Set<HTMLImageElement>();
+    /** 已完成初始渲染的编辑器:只有其中的新图片才算"用户插入",避免打开文档时误传已有图片 */
+    private readonly readyProtyles = new WeakSet<object>();
 
     private get config(): PichostConfig {
         const stored = this.data[STORAGE_NAME] as PichostConfig;
         return {
             serverUrl: (stored?.serverUrl || DEFAULT_CONFIG.serverUrl).replace(/\/+$/, ""),
             token: stored?.token || DEFAULT_CONFIG.token,
+            autoUpload: Boolean(stored?.autoUpload),
         };
     }
 
@@ -106,6 +116,7 @@ export default class PichostPlugin extends Plugin {
                 const client = new PichostClient({
                     serverUrl: (serverInputElement.value.trim() || DEFAULT_CONFIG.serverUrl).replace(/\/+$/, ""),
                     token: tokenInputElement.value.trim(),
+                    autoUpload: false,
                 });
                 if (!client.ready) {
                     showMessage(`[${this.name}] ${this.i18n.missingToken}`);
@@ -124,7 +135,11 @@ export default class PichostPlugin extends Plugin {
         this.setting = new Setting({
             width: "600px",
             confirmCallback: () => {
-                this.saveConfig(serverInputElement.value.trim(), tokenInputElement.value.trim());
+                this.saveConfig(
+                    serverInputElement.value.trim(),
+                    tokenInputElement.value.trim(),
+                    autoUploadToggleElement.checked,
+                );
             },
         });
         this.setting.addItem({
@@ -154,6 +169,20 @@ export default class PichostPlugin extends Plugin {
             description: this.i18n.testConnectionDesc,
             actionElement: testButtonElement,
         });
+        // 自动上传开关:切换后立即保存,无需确认
+        const autoUploadToggleElement = document.createElement("input");
+        autoUploadToggleElement.type = "checkbox";
+        autoUploadToggleElement.className = "b3-switch fn__flex-center";
+        autoUploadToggleElement.checked = this.config.autoUpload;
+        autoUploadToggleElement.addEventListener("change", () => {
+            this.saveConfig(serverInputElement.value.trim(), tokenInputElement.value.trim(), autoUploadToggleElement.checked);
+            showMessage(`[${this.name}] ${autoUploadToggleElement.checked ? this.i18n.autoUploadOn : this.i18n.autoUploadOff}`);
+        });
+        this.setting.addItem({
+            title: this.i18n.autoUpload,
+            description: this.i18n.autoUploadDesc,
+            actionElement: autoUploadToggleElement,
+        });
         this.setting.addItem({
             title: this.i18n.settingActionTitle,
             description: this.i18n.settingActionDesc,
@@ -163,6 +192,7 @@ export default class PichostPlugin extends Plugin {
         this.eventBus.on("open-menu-image", this.onMenuImage);
         this.eventBus.on("open-menu-content", this.onMenuContent);
         this.eventBus.on("open-menu-breadcrumbmore", this.onMenuBreadcrumbMore);
+        this.setupAutoUpload();
     }
 
     async onLayoutReady() {
@@ -184,6 +214,15 @@ export default class PichostPlugin extends Plugin {
         this.eventBus.off("open-menu-image", this.onMenuImage);
         this.eventBus.off("open-menu-content", this.onMenuContent);
         this.eventBus.off("open-menu-breadcrumbmore", this.onMenuBreadcrumbMore);
+        this.eventBus.off("loaded-protyle-static", this.onProtyleLoaded);
+        this.eventBus.off("loaded-protyle-dynamic", this.onProtyleLoaded);
+        this.autoObserver?.disconnect();
+        this.autoObserver = null;
+        if (this.autoTimer) {
+            window.clearTimeout(this.autoTimer);
+            this.autoTimer = null;
+        }
+        this.autoQueue.clear();
     }
 
     async uninstall() {
@@ -203,10 +242,139 @@ export default class PichostPlugin extends Plugin {
         });
     }
 
-    private saveConfig(serverUrl: string, token: string) {
+    // ── 自动上传:监视编辑器新增的本地资产图片,上传后替换为外链并删除本地副本 ──
+
+    private setupAutoUpload() {
+        this.eventBus.on("loaded-protyle-static", this.onProtyleLoaded);
+        this.eventBus.on("loaded-protyle-dynamic", this.onProtyleLoaded);
+        this.autoObserver = new MutationObserver((mutations) => {
+            if (!this.config.autoUpload) {
+                return;
+            }
+            for (const mutation of mutations) {
+                mutation.addedNodes.forEach((node) => {
+                    if (node.nodeType !== Node.ELEMENT_NODE) {
+                        return;
+                    }
+                    const el = node as HTMLElement;
+                    if (el instanceof HTMLImageElement) {
+                        this.enqueueAuto(el);
+                    } else {
+                        el.querySelectorAll?.("img").forEach((img) => this.enqueueAuto(img));
+                    }
+                });
+            }
+            if (this.autoQueue.size > 0) {
+                this.scheduleAuto();
+            }
+        });
+        this.autoObserver.observe(document.body, {childList: true, subtree: true});
+    }
+
+    private readonly onProtyleLoaded = (event: CustomEvent<{protyle: IProtyle}>) => {
+        this.readyProtyles.add(event.detail.protyle);
+    };
+
+    private findProtyle(img: HTMLElement): IProtyle | null {
+        for (const editor of getAllEditor()) {
+            if (editor.protyle.wysiwyg.element.contains(img)) {
+                return editor.protyle;
+            }
+        }
+        return null;
+    }
+
+    private enqueueAuto(img: HTMLImageElement) {
+        if (this.autoQueue.has(img)) {
+            return;
+        }
+        if (img.getAttribute("data-pichost") || !getLocalAssetPath(img)) {
+            return;
+        }
+        const protyle = this.findProtyle(img);
+        if (!protyle || !this.readyProtyles.has(protyle) || protyle.disabled) {
+            return;
+        }
+        this.autoQueue.add(img);
+    }
+
+    private scheduleAuto() {
+        if (this.autoTimer) {
+            window.clearTimeout(this.autoTimer);
+        }
+        this.autoTimer = window.setTimeout(() => {
+            this.autoTimer = null;
+            this.processAutoQueue();
+        }, 600);
+    }
+
+    private async processAutoQueue() {
+        const pending = [...this.autoQueue].filter((img) => img.isConnected && getLocalAssetPath(img));
+        this.autoQueue.clear();
+        if (!this.config.autoUpload || !this.getClient().ready || pending.length === 0) {
+            return;
+        }
+        // 按所属编辑器分组,事务按编辑器提交
+        const groups = new Map<IProtyle, HTMLImageElement[]>();
+        for (const img of pending) {
+            const protyle = this.findProtyle(img);
+            if (!protyle || protyle.disabled) {
+                continue;
+            }
+            const group = groups.get(protyle) || [];
+            group.push(img);
+            groups.set(protyle, group);
+        }
+        let success = 0;
+        let fail = 0;
+        let firstError: Error | undefined;
+        const deletePaths: string[] = [];
+        for (const [protyle, images] of groups) {
+            const results = await uploadAndReplaceImages(this.getClient(), images);
+            const ops: IOperation[] = [];
+            const seenBlockIds = new Set<string>();
+            for (const result of results) {
+                if (!result.item) {
+                    fail++;
+                    firstError = firstError || result.error;
+                    continue;
+                }
+                success++;
+                deletePaths.push(result.assetPath);
+                const blockElement = result.img.closest("[data-node-id]");
+                const blockId = blockElement?.getAttribute("data-node-id");
+                if (blockElement && blockId && !seenBlockIds.has(blockId)) {
+                    seenBlockIds.add(blockId);
+                    ops.push({id: blockId, data: blockElement.outerHTML, action: "update"});
+                }
+            }
+            if (ops.length > 0) {
+                protyle.getInstance().transaction(ops);
+            }
+        }
+        // 引用已替换为外链,删除本地副本(失败静默,不影响使用)
+        deletePaths.forEach((path) => {
+            deleteAssetFile(path).catch(() => {
+                // 忽略:个别内核版本可能限制删除,仅保留本地文件
+            });
+        });
+        if (success > 0 && fail === 0) {
+            showMessage(`[${this.name}] ${this.i18n.uploadDone.replace("${count}", success.toString())}`);
+        } else if (fail > 0) {
+            showMessage(`[${this.name}] ${
+                this.i18n.uploadPartial
+                    .replace("${success}", success.toString())
+                    .replace("${fail}", fail.toString())
+                    .replace("${msg}", firstError?.message || "")
+            }`);
+        }
+    }
+
+    private saveConfig(serverUrl: string, token: string, autoUpload = this.config.autoUpload) {
         const config: PichostConfig = {
             serverUrl: (serverUrl || DEFAULT_CONFIG.serverUrl).replace(/\/+$/, ""),
             token: token || DEFAULT_CONFIG.token,
+            autoUpload,
         };
         this.saveData(STORAGE_NAME, config).then(() => {
             this.data[STORAGE_NAME] = config;

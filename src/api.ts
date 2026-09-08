@@ -7,6 +7,8 @@
 export interface PichostConfig {
     serverUrl: string;
     token: string;
+    /** 开启后,插入文档的图片自动上传并删除本地副本 */
+    autoUpload: boolean;
 }
 
 export interface PichostImageItem {

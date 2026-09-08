@@ -1,5 +1,14 @@
 # Change Log
 
+## 0.2.0 (2026-09-09)
+
+- New setting toggle **Auto-upload inserted images**: newly pasted/dropped images are uploaded automatically, the local `assets/` copy is deleted, and the document keeps only the remote URL.
+- Fixed: context-menu upload failed because `/api/file/getFile` was called with a workspace-root-relative path (`data/` prefix added) and without the kernel auth token.
+
+## 0.1.1 (2026-09-09)
+
+- Settings: add a **Test Connection** button that verifies the server URL and API token entered in the form (no save required).
+
 ## 0.1.0 (2026-09-08)
 
 - Initial release.

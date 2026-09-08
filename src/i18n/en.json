@@ -37,5 +37,9 @@
   "testConnectionDesc": "Verify the server URL and API token above (no need to save first)",
   "testing": "Testing...",
   "testOk": "Connection OK — ${total} image(s) on the host",
-  "testFail": "Connection failed: ${msg}"
+  "testFail": "Connection failed: ${msg}",
+  "autoUpload": "Auto-upload inserted images",
+  "autoUploadDesc": "When enabled, pasted or dropped images are uploaded to PicHost automatically, the local asset copy is removed, and the document keeps only the remote URL. Takes effect for newly inserted images.",
+  "autoUploadOn": "Auto-upload enabled",
+  "autoUploadOff": "Auto-upload disabled"
 }

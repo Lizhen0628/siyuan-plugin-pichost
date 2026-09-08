@@ -37,5 +37,9 @@
   "testConnectionDesc": "验证上方填写的服务器地址与 API Token(无需先保存)",
   "testing": "测试中...",
   "testOk": "连接成功,图床共有 ${total} 张图片",
-  "testFail": "连接失败:${msg}"
+  "testFail": "连接失败:${msg}",
+  "autoUpload": "自动上传插入的图片",
+  "autoUploadDesc": "开启后,粘贴或拖入文档的图片会自动上传到 PicHost,并删除本地 assets 副本,笔记中仅保留外链(仅对新插入的图片生效)",
+  "autoUploadOn": "自动上传已开启",
+  "autoUploadOff": "自动上传已关闭"
 }

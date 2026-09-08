@@ -1,6 +1,23 @@
 import {PichostClient, PichostImageItem} from "./api";
 
 /**
+ * 思源内核 API 的公共请求头。
+ * 配置了"访问授权码"的实例需要携带 Token,未配置时多余的头无害。
+ */
+export function kernelAuthHeaders(): Record<string, string> {
+    const token = (window as any)?.siyuan?.config?.api?.token;
+    return {
+        "Content-Type": "application/json",
+        ...(token ? {Authorization: `Token ${token}`} : {}),
+    };
+}
+
+/** getFile / deleteFile 的 path 相对工作空间根,资产实际存放在 data/assets/ 下。 */
+function kernelPath(assetPath: string): string {
+    return assetPath.startsWith("data/") ? assetPath : `data/${assetPath}`;
+}
+
+/**
  * 判断一个 img 的引用是否为思源本地资产(assets/)。
  * 外链(http/https)与空值都不算。
  */
@@ -31,13 +48,22 @@ export function collectLocalImages(root: HTMLElement): HTMLImageElement[] {
 export async function fetchAssetBlob(assetPath: string): Promise<Blob> {
     const resp = await fetch("/api/file/getFile", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({path: assetPath}),
+        headers: kernelAuthHeaders(),
+        body: JSON.stringify({path: kernelPath(assetPath)}),
     });
     if (!resp.ok) {
         throw new Error(`HTTP ${resp.status} while fetching ${assetPath}`);
     }
     return await resp.blob();
+}
+
+/** 删除本地资产文件(自动上传模式下不再保留本地副本)。 */
+export async function deleteAssetFile(assetPath: string): Promise<void> {
+    await fetch("/api/file/deleteFile", {
+        method: "POST",
+        headers: kernelAuthHeaders(),
+        body: JSON.stringify({path: kernelPath(assetPath)}),
+    });
 }
 
 export interface UploadProgressItem {
