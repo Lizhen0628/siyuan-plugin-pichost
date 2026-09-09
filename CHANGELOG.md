@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.1 (2026-09-09)
+
+- Panel: replace the clunky text-button row with a hover action overlay on each thumbnail — icon buttons (copy URL / Markdown / HTML, delete) with native SiYuan tooltips; always visible on touch devices.
+
 ## 0.2.0 (2026-09-09)
 
 - New setting toggle **Auto-upload inserted images**: newly pasted/dropped images are uploaded automatically, the local `assets/` copy is deleted, and the document keeps only the remote URL.

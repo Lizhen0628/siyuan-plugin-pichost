@@ -62,6 +62,19 @@ export default class PichostPlugin extends Plugin {
     onload() {
         this.addIcons(`<symbol id="${PANEL_ICON}" viewBox="0 0 24 24">
 <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"></path>
+</symbol>
+<symbol id="iconPichostLink" viewBox="0 0 24 24">
+<path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path>
+</symbol>
+<symbol id="iconPichostMd" viewBox="0 0 24 24">
+<path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M3.5 6.5h17A1.5 1.5 0 0 1 22 8v8a1.5 1.5 0 0 1-1.5 1.5h-17A1.5 1.5 0 0 1 2 16V8a1.5 1.5 0 0 1 1.5-1.5z"></path>
+<path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M5.5 15V9l3 3.2 3-3.2v6"></path>
+<path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M16.5 9v6m0 0l-2.2-2.3m2.2 2.3l2.2-2.3"></path>
+</symbol>
+<symbol id="iconPichostHtml" viewBox="0 0 24 24">
+<path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M8.5 7l-5 5 5 5"></path>
+<path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="M15.5 7l5 5-5 5"></path>
+<path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" d="M13.2 5.5l-2.4 13"></path>
 </symbol>`);
 
         this.isMobile = getFrontend() === "mobile" || getFrontend() === "browser-mobile";

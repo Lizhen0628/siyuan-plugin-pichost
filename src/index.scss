@@ -64,6 +64,7 @@
     }
 
     &__thumb {
+        position: relative;
         height: 120px;
         display: flex;
         align-items: center;
@@ -76,6 +77,65 @@
             max-height: 100%;
             object-fit: contain;
             transition: transform 0.15s ease;
+        }
+    }
+
+    // 悬浮在缩略图右上角的快捷操作(思源 ariaLabel tooltip)
+    &__quick {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        gap: 2px;
+        padding: 3px;
+        border-radius: 8px;
+        background: rgba(0, 0, 0, 0.55);
+        backdrop-filter: blur(6px);
+        opacity: 0;
+        transform: translateY(-3px);
+        transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+
+    &__card:hover &__quick,
+    &__card:focus-within &__quick {
+        opacity: 1;
+        transform: none;
+    }
+
+    &__iconbtn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px 6px;
+        border: none;
+        border-radius: 5px;
+        background: transparent;
+        color: #fff;
+        cursor: pointer;
+
+        svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.22);
+        }
+
+        &:active {
+            background: rgba(255, 255, 255, 0.34);
+        }
+    }
+
+    &__iconbtn--danger:hover {
+        background: rgba(235, 80, 80, 0.65);
+    }
+
+    // 触屏设备无 hover:常显
+    @media (hover: none) {
+        .pichost-panel__quick {
+            opacity: 1;
+            transform: none;
         }
     }
 
@@ -94,22 +154,5 @@
     &__sub {
         font-size: 11px;
         color: var(--b3-theme-on-surface);
-    }
-
-    &__actions {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        padding: 6px 8px 8px;
-        flex-wrap: wrap;
-    }
-
-    &__danger {
-        color: var(--b3-theme-error) !important;
-
-        svg {
-            width: 14px;
-            height: 14px;
-        }
     }
 }

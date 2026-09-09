@@ -179,19 +179,16 @@ export class PichostPanel {
         card.className = "pichost-panel__card";
         card.innerHTML = `<div class="pichost-panel__thumb">
     <img src="${escapeHtml(item.url)}" loading="lazy" alt="${escapeHtml(item.originalName)}">
+    <div class="pichost-panel__quick">
+        <button type="button" class="pichost-panel__iconbtn ariaLabel" data-position="south" data-action="copyUrl" aria-label="${escapeHtml(this.t("copyUrl"))}"><svg><use xlink:href="#iconPichostLink"></use></svg></button>
+        <button type="button" class="pichost-panel__iconbtn ariaLabel" data-position="south" data-action="copyMarkdown" aria-label="${escapeHtml(this.t("copyMarkdown"))}"><svg><use xlink:href="#iconPichostMd"></use></svg></button>
+        <button type="button" class="pichost-panel__iconbtn ariaLabel" data-position="south" data-action="copyHtml" aria-label="${escapeHtml(this.t("copyHtml"))}"><svg><use xlink:href="#iconPichostHtml"></use></svg></button>
+        <button type="button" class="pichost-panel__iconbtn pichost-panel__iconbtn--danger ariaLabel" data-position="south" data-action="delete" aria-label="${escapeHtml(this.t("delete"))}"><svg><use xlink:href="#iconTrashcan"></use></svg></button>
+    </div>
 </div>
 <div class="pichost-panel__meta">
     <div class="pichost-panel__name" title="${escapeHtml(item.originalName)}">${escapeHtml(item.originalName)}</div>
     <div class="pichost-panel__sub">${escapeHtml(formatBytes(item.size))}</div>
-</div>
-<div class="pichost-panel__actions">
-    <button class="b3-button b3-button--small" data-action="copyUrl">${escapeHtml(this.t("copyUrl"))}</button>
-    <button class="b3-button b3-button--small" data-action="copyMarkdown">${escapeHtml(this.t("copyMarkdown"))}</button>
-    <button class="b3-button b3-button--small" data-action="copyHtml">${escapeHtml(this.t("copyHtml"))}</button>
-    <span class="fn__flex-1"></span>
-    <button class="b3-button b3-button--small pichost-panel__danger" data-action="delete">
-        <svg><use xlink:href="#iconTrashcan"></use></svg>
-    </button>
 </div>`;
 
         const notifyCopied = () => showMessage(this.t("copied"));
