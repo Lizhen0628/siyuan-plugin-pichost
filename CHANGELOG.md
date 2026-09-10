@@ -1,5 +1,11 @@
 # Change Log
 
+## 0.2.4 (2026-09-10)
+
+- Top bar / tab icon now uses SiYuan's native `iconImage` (with an identical local fallback for older clients), matching the built-in UI style.
+- Settings: removed the redundant "Open plugin settings" item.
+- Settings: shortened the auto-upload description so the toggle no longer sits awkwardly far to the right.
+
 ## 0.2.3 (2026-09-10)
 
 - Fix bazaar manifest: `backends` / `frontends` no longer mix `"all"` with concrete platforms (use only `["all"]`), unblocking the marketplace PR check.

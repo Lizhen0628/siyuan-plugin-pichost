@@ -28,9 +28,6 @@
   "serverUrlDesc": "Base URL of your self-hosted PicHost instance",
   "token": "API Token",
   "tokenDesc": "Sent as the Auth-Token header on every request",
-  "settingActionTitle": "Open plugin settings",
-  "settingActionDesc": "Open the SiYuan settings dialog for this plugin",
-  "openSetting": "Settings",
   "saved": "Settings saved",
   "missingToken": "Please configure the API Token in plugin settings first",
   "testConnection": "Test Connection",
@@ -39,7 +36,7 @@
   "testOk": "Connection OK — ${total} image(s) on the host",
   "testFail": "Connection failed: ${msg}",
   "autoUpload": "Auto-upload inserted images",
-  "autoUploadDesc": "When enabled, pasted or dropped images are uploaded to PicHost automatically, the local asset copy is removed, and the document keeps only the remote URL. Takes effect for newly inserted images.",
+  "autoUploadDesc": "Auto-upload pasted/dropped images as remote links and delete local copies (new images only)",
   "autoUploadOn": "Auto-upload enabled",
   "autoUploadOff": "Auto-upload disabled"
 }

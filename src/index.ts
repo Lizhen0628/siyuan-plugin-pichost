@@ -5,7 +5,6 @@ import {
     Plugin,
     Setting,
     showMessage,
-    openSetting,
     openTab,
     getFrontend,
 } from "siyuan";
@@ -17,7 +16,7 @@ import {PichostPanel} from "./panel";
 
 const STORAGE_NAME = "pichost-config";
 const TAB_TYPE = "pichost_tab";
-const PANEL_ICON = "iconPichost";
+const PANEL_ICON = "iconImage";
 
 /**
  * Tab 实例 → 面板实例的注册表。
@@ -60,8 +59,10 @@ export default class PichostPlugin extends Plugin {
     }
 
     onload() {
-        this.addIcons(`<symbol id="${PANEL_ICON}" viewBox="0 0 24 24">
-<path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"></path>
+        // 顶栏/页签直接使用思源原生 iconImage;这里按原样重复注册一份,
+        // 作为低版本客户端缺少该 symbol 时的兜底(内容与原生完全一致,重复 id 无副作用)。
+        this.addIcons(`<symbol id="iconImage" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+<rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect><circle cx="9" cy="9" r="2"></circle><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"></path>
 </symbol>
 <symbol id="iconPichostLink" viewBox="0 0 24 24">
 <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"></path>
@@ -105,12 +106,6 @@ export default class PichostPlugin extends Plugin {
             },
         });
 
-        const settingButtonElement = document.createElement("button");
-        settingButtonElement.className = "b3-button b3-button--outline fn__flex-center fn__size200";
-        settingButtonElement.textContent = this.i18n.openSetting;
-        settingButtonElement.addEventListener("click", () => {
-            openSetting(this.app);
-        });
         const serverInputElement = document.createElement("input");
         const tokenInputElement = document.createElement("input");
         // 测试按钮:用输入框中的当前值(未保存也可)验证地址与密钥
@@ -195,11 +190,6 @@ export default class PichostPlugin extends Plugin {
             title: this.i18n.autoUpload,
             description: this.i18n.autoUploadDesc,
             actionElement: autoUploadToggleElement,
-        });
-        this.setting.addItem({
-            title: this.i18n.settingActionTitle,
-            description: this.i18n.settingActionDesc,
-            actionElement: settingButtonElement,
         });
 
         this.eventBus.on("open-menu-image", this.onMenuImage);

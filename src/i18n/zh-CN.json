@@ -28,9 +28,6 @@
   "serverUrlDesc": "自部署 PicHost 实例的基础地址",
   "token": "API Token",
   "tokenDesc": "所有请求都会通过 Auth-Token 请求头携带",
-  "settingActionTitle": "打开插件设置",
-  "settingActionDesc": "打开思源设置中的本插件配置界面",
-  "openSetting": "设置",
   "saved": "设置已保存",
   "missingToken": "请先在插件设置中配置 API Token",
   "testConnection": "测试连接",
@@ -39,7 +36,7 @@
   "testOk": "连接成功,图床共有 ${total} 张图片",
   "testFail": "连接失败:${msg}",
   "autoUpload": "自动上传插入的图片",
-  "autoUploadDesc": "开启后,粘贴或拖入文档的图片会自动上传到 PicHost,并删除本地 assets 副本,笔记中仅保留外链(仅对新插入的图片生效)",
+  "autoUploadDesc": "粘贴/拖入的图片自动上传为外链并删除本地副本,仅对新插入的图片生效",
   "autoUploadOn": "自动上传已开启",
   "autoUploadOff": "自动上传已关闭"
 }
