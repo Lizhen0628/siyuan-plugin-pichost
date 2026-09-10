@@ -13,7 +13,8 @@
     "build": "run-s build:kernel build:app",
     "build:app": "webpack --config webpack.config.js --mode production",
     "build:kernel": "webpack --config webpack.kernel.config.js --mode production",
-    "deploy": "pnpm run build && rsync -a --delete --exclude .DS_Store dist/ \"${SIYUAN_PLUGINS_DIR:-$HOME/SiYuanKnowledgeBase/data/plugins}/siyuan-plugin-pichost/\""
+    "postbuild": "mkdir -p \"${SIYUAN_PLUGINS_DIR:-$HOME/SiYuanKnowledgeBase/data/plugins}/siyuan-plugin-pichost\" && rsync -a --delete --exclude .DS_Store dist/ \"${SIYUAN_PLUGINS_DIR:-$HOME/SiYuanKnowledgeBase/data/plugins}/siyuan-plugin-pichost/\"",
+    "deploy": "pnpm run build"
   },
   "keywords": [],
   "author": "lizhen",

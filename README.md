@@ -16,7 +16,7 @@ A [SiYuan](https://b3log.org/siyuan) plugin that uploads document images to a se
 1. Install Node.js (>= 20) and pnpm, then run `pnpm i`.
 2. `pnpm run dev` for watch builds, or `pnpm run build` to produce `package.zip`.
 3. Clone this repo into `{SiYuan workspace}/data/plugins/` (recommended) and enable the plugin from the marketplace "Downloaded" tab.
-4. Alternatively, keep the repo anywhere and run `pnpm run deploy` — it builds and syncs `dist/` into `{workspace}/data/plugins/siyuan-plugin-pichost/` (defaults to `~/SiYuanKnowledgeBase/data/plugins`; override with the `SIYUAN_PLUGINS_DIR` env var). Reload the plugin in SiYuan afterwards.
+4. Alternatively, keep the repo anywhere: every `pnpm run build` automatically syncs `dist/` into `{workspace}/data/plugins/siyuan-plugin-pichost/` via the `postbuild` hook (defaults to `~/SiYuanKnowledgeBase/data/plugins`; override with the `SIYUAN_PLUGINS_DIR` env var). Reload the plugin in SiYuan afterwards.
 
 ## Configuration
 
