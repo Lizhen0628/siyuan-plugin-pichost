@@ -36,7 +36,7 @@
   "testOk": "连接成功,图床共有 ${total} 张图片",
   "testFail": "连接失败:${msg}",
   "autoUpload": "自动上传插入的图片",
-  "autoUploadDesc": "粘贴/拖入的图片自动上传为外链并删除本地副本,仅对新插入的图片生效",
+  "autoUploadDesc": "新插入的图片自动上传为外链,并删除本地副本",
   "autoUploadOn": "自动上传已开启",
   "autoUploadOff": "自动上传已关闭"
 }

@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.5 (2026-09-10)
+
+- Settings: wrap the auto-upload switch in a 200px action container so its column aligns with the inputs/buttons above (SiYuan's own switch styles override the `fn__size200` width, which made the toggle row look squeezed against the right edge); description shortened to a single line.
+
 ## 0.2.4 (2026-09-10)
 
 - Top bar / tab icon now uses SiYuan's native `iconImage` (with an identical local fallback for older clients), matching the built-in UI style.

@@ -177,19 +177,24 @@ export default class PichostPlugin extends Plugin {
             description: this.i18n.testConnectionDesc,
             actionElement: testButtonElement,
         });
-        // 自动上传开关:切换后立即保存,无需确认
+        // 自动上传开关:切换后立即保存,无需确认。
+        // 开关外包一层与输入框/按钮同宽的容器:思源会忽略 b3-switch 的 fn__size200(被自身样式覆盖),
+        // 直接传开关会导致该行操作区只有 26px 宽,与上方 200px 的控件不对齐。
         const autoUploadToggleElement = document.createElement("input");
         autoUploadToggleElement.type = "checkbox";
-        autoUploadToggleElement.className = "b3-switch fn__flex-center";
+        autoUploadToggleElement.className = "b3-switch";
         autoUploadToggleElement.checked = this.config.autoUpload;
         autoUploadToggleElement.addEventListener("change", () => {
             this.saveConfig(serverInputElement.value.trim(), tokenInputElement.value.trim(), autoUploadToggleElement.checked);
             showMessage(`[${this.name}] ${autoUploadToggleElement.checked ? this.i18n.autoUploadOn : this.i18n.autoUploadOff}`);
         });
+        const autoUploadActionElement = document.createElement("div");
+        autoUploadActionElement.className = "fn__flex fn__flex-center";
+        autoUploadActionElement.appendChild(autoUploadToggleElement);
         this.setting.addItem({
             title: this.i18n.autoUpload,
             description: this.i18n.autoUploadDesc,
-            actionElement: autoUploadToggleElement,
+            actionElement: autoUploadActionElement,
         });
 
         this.eventBus.on("open-menu-image", this.onMenuImage);

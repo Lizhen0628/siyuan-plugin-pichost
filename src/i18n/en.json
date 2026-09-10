@@ -36,7 +36,7 @@
   "testOk": "Connection OK — ${total} image(s) on the host",
   "testFail": "Connection failed: ${msg}",
   "autoUpload": "Auto-upload inserted images",
-  "autoUploadDesc": "Auto-upload pasted/dropped images as remote links and delete local copies (new images only)",
+  "autoUploadDesc": "Newly inserted images are uploaded as remote links and local copies removed",
   "autoUploadOn": "Auto-upload enabled",
   "autoUploadOff": "Auto-upload disabled"
 }
