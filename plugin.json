@@ -2,21 +2,12 @@
   "name": "siyuan-plugin-pichost",
   "author": "lizhen",
   "url": "https://github.com/Lizhen0628/siyuan-plugin-pichost",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "minAppVersion": "3.8.3",
   "backends": [
-    "windows",
-    "linux",
-    "darwin",
-    "docker",
     "all"
   ],
   "frontends": [
-    "desktop",
-    "mobile",
-    "browser-desktop",
-    "browser-mobile",
-    "desktop-window",
     "all"
   ],
   "disabledInPublish": false,

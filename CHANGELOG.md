@@ -1,5 +1,9 @@
 # Change Log
 
+## 0.2.3 (2026-09-10)
+
+- Fix bazaar manifest: `backends` / `frontends` no longer mix `"all"` with concrete platforms (use only `["all"]`), unblocking the marketplace PR check.
+
 ## 0.2.1 (2026-09-09)
 
 - Panel: replace the clunky text-button row with a hover action overlay on each thumbnail — icon buttons (copy URL / Markdown / HTML, delete) with native SiYuan tooltips; always visible on touch devices.
