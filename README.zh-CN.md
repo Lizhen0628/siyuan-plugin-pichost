@@ -15,7 +15,8 @@
 
 1. 安装 Node.js(>= 20)与 pnpm,执行 `pnpm i`。
 2. `pnpm run dev` 实时编译;`pnpm run build` 产出 `package.zip`。
-3. 建议把本仓库克隆到 `{思源工作空间}/data/plugins/` 目录,在思源"市场 → 下载"中启用。
+3. 建议把本仓库克隆到 `{思源工作空间}/data/plugins/` 目录,在思源“市场 → 下载”中启用。
+4. 也可以把仓库放在任意位置,使用 `pnpm run deploy` 一键构建并同步 `dist/` 到 `{工作空间}/data/plugins/siyuan-plugin-pichost/`(默认 `~/SiYuanKnowledgeBase/data/plugins`,可用环境变量 `SIYUAN_PLUGINS_DIR` 覆盖),然后在思源中重载插件。
 
 ## 配置
 

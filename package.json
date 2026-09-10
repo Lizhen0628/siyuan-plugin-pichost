@@ -12,7 +12,8 @@
     "dev:kernel": "webpack --config webpack.kernel.config.js --mode development",
     "build": "run-s build:kernel build:app",
     "build:app": "webpack --config webpack.config.js --mode production",
-    "build:kernel": "webpack --config webpack.kernel.config.js --mode production"
+    "build:kernel": "webpack --config webpack.kernel.config.js --mode production",
+    "deploy": "pnpm run build && rsync -a --delete --exclude .DS_Store dist/ \"${SIYUAN_PLUGINS_DIR:-$HOME/SiYuanKnowledgeBase/data/plugins}/siyuan-plugin-pichost/\""
   },
   "keywords": [],
   "author": "lizhen",
